@@ -35,6 +35,12 @@ export default function FootballPredictor() {
   const wheelAreaRef = useRef<HTMLDivElement>(null);
   const [wheelSize, setWheelSize] = useState(380); // will be updated responsively
 
+  const disable = spinning ||
+                  team1.name.trim() === "" ||
+                  team1.name.trim() === "Team 1" ||
+                  team2.name.trim() === "" ||
+                  team2.name.trim() === "Team 2"
+
   useEffect(() => {
     const el = wheelAreaRef.current;
     if (!el) return;
@@ -302,13 +308,13 @@ export default function FootballPredictor() {
             {!showResult ? (
               <button
                 onClick={spin}
-                disabled={spinning}
+                disabled={disable}
                 className="w-full cursor-pointer py-4 rounded-xl text-lg sm:text-xl font-black transition-all disabled:opacity-70"
                 style={{
-                  background: spinning
-                    ? "linear-gradient(135deg, #4b5563, #374151)"
+                  background: disable
+                    ? "linear-gradient(135deg, #5BC181, #5BC181)"
                     : "linear-gradient(135deg, #22c55e, #16a34a)",
-                  boxShadow: spinning
+                  boxShadow: disable
                     ? "none"
                     : "0 4px 20px rgba(34, 197, 94, 0.5)",
                 }}
@@ -351,7 +357,9 @@ export default function FootballPredictor() {
                       setTeam1({ ...team1, name: e.target.value })
                     }
                     placeholder="Team 1 name"
-                    className="flex-1 rounded-lg bg-white/10 border border-white/20 px-4 py-3 font-bold placeholder-white/50"
+                    className={`flex-1 rounded-lg bg-white/10 border border-white/20 px-4 py-3 font-bold placeholder-white/50 ${
+                      team1.name.trim() === "Team 1" ? 'text-gray-300' : ''
+                    }`}
                   />
                 </div>
 
@@ -373,7 +381,9 @@ export default function FootballPredictor() {
                       setTeam2({ ...team2, name: e.target.value })
                     }
                     placeholder="Team 2 name"
-                    className="flex-1 rounded-lg bg-white/10 border border-white/20 px-4 py-3 font-bold placeholder-white/50"
+                    className={`flex-1 rounded-lg bg-white/10 border border-white/20 px-4 py-3 font-bold placeholder-white/50 ${
+                      team2.name.trim() === "Team 2" ? 'text-gray-300' : ''
+                    }`}
                   />
                 </div>
 
