@@ -93,18 +93,10 @@ export default function FootballPredictor() {
     setWinner(null);
     setShowResult(false);
 
-    const segments = outcomes.length;
-    const segStep = 360 / segments;
-
-    const targetIndex = Math.floor(Math.random() * segments);
-    const targetCenterAngle = targetIndex * segStep + segStep / 2;
-
-    const current = rotation % 360;
-    let baseDelta = (-targetCenterAngle - current) % 360;
-    if (baseDelta > 0) baseDelta -= 360;
-
-    const fullSpins = 6 + Math.floor(Math.random() * 3);
-    const targetRotation = rotation + baseDelta + fullSpins * 360;
+    // Generate a truly random final rotation
+    const fullSpins = 6 + Math.floor(Math.random() * 3); // 6-8 full rotations
+    const randomAngle = Math.random() * 360; // Random angle within one rotation
+    const targetRotation = rotation + (fullSpins * 360) + randomAngle;
 
     const wheel = wheelRef.current;
     if (wheel) {
@@ -114,7 +106,14 @@ export default function FootballPredictor() {
 
     const handleDone = () => {
       setRotation(targetRotation);
-      setWinner(outcomes[targetIndex]);
+      
+      // Determine winner based on final rotation
+      const segments = outcomes.length;
+      const segStep = 360 / segments;
+      const normalizedRotation = ((targetRotation % 360) + 360) % 360;
+      const winningIndex = Math.floor(((360 - normalizedRotation) % 360) / segStep) % segments;
+      
+      setWinner(outcomes[winningIndex]);
       setSpinning(false);
       setTimeout(() => setShowResult(true), 250);
       wheel?.removeEventListener("transitionend", handleDone);
